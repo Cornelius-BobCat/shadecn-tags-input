@@ -1,8 +1,8 @@
 {
   "name": "@vincentcornelius/shadecn-tags-input",
-  "version": "1.0.5",
+  "version": "1.2.0",
   "private": false,
-  "description": "Tags input component for Shadecn",
+  "description": "Tags input component for Shadcn",
   "keywords": [
     "shadecn",
     "tags",
@@ -11,11 +11,10 @@
     "react",
     "typescript",
     "tailwindcss",
-    "ui",
-    "shadecn"
+    "ui"
   ],
   "author": "Vincent Cornelius",
-  "homepage": "https://glups.uno/my-linkedin",
+  "homepage": "https://documentation-shadecn-tags-input.vercel.app",
   "repository": {
     "type": "git",
     "url": "https://github.com/Cornelius-BobCat/shadecn-tags-input"
@@ -24,29 +23,40 @@
     "url": "https://github.com/Cornelius-BobCat/shadecn-tags-input/issues"
   },
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "bin": {
+    "shadecn-tags-input": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "components",
+    "components/ui/tags-input.tsx"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts"
+    "build": "mkdir -p components/ui && tsup cli/src/index.ts --format cjs --dts && cp src/components/ui/tags-input.tsx components/ui/",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist components/ui",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "react": "^18.0.0",
-    "lucide-react": "^0.468.0",
-    "@radix-ui/react-slot": "^1.0.2",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.1"
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "next": "^14.0.0",
-    "tailwindcss": "^3.3.0",
-    "@types/react": "^18.0.0",
-    "@types/node": "^20.0.0",
-    "clsx": "^2.1.1"
+    "@radix-ui/react-slot": "^1.0.0",
+    "@types/node": ">=18.0.0",
+    "@types/react": ">=18.0.0",
+    "class-variance-authority": ">=0.6.0",
+    "clsx": ">=2.0.0",
+    "lucide-react": ">=0.435.0",
+    "next": ">=13.0.0",
+    "react": ">=18.0.0",
+    "tailwind-merge": ">=2.0.0",
+    "tailwindcss": ">=3.0.0"
   },
   "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/node": "^20.11.17",
     "tsup": "^8.0.2",
     "typescript": "^5.0.0"
   }

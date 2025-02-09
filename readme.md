@@ -13,17 +13,33 @@ A beautiful and customizable tags input component for ShadcnUI and React applica
 - 🎨 Highly customizable styling
 - 🔒 TypeScript
 - ⚡ Lightweight
+- 📦 Zero-install - copy and paste the code
+- 🎮 Easy to use API
 
 ## Installation
 
 ```bash
+# Add the component to your project
+npx @vincentcornelius/shadecn-tags-input add
+
+# Or install as a package (if you prefer not to copy the code)
 npm install @vincentcornelius/shadecn-tags-input
+```
+
+## Prerequisites
+
+This component is built on top of shadcn/ui. Make sure you have it set up in your project:
+
+```bash
+npx shadcn-ui@latest init
 ```
 
 ## Usage
 
+After installation, you can import and use the component:
+
 ```tsx
-import { TagsInput } from "@vincentcornelius/shadecn-tags-input";
+import { TagsInput } from "@/components/ui/tags-input";
 import { useState } from "react";
 
 function Example() {

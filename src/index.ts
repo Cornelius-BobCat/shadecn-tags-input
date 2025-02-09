@@ -1,1 +1,1 @@
-export { TagsInput } from "./tags-input";
+export { TagsInput } from "./components/ui/tags-input";
