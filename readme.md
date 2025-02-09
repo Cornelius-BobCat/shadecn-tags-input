@@ -15,15 +15,14 @@ A beautiful and customizable tags input component for ShadcnUI and React applica
 - ⚡ Lightweight
 - 📦 Zero-install - copy and paste the code
 - 🎮 Easy to use API
+- 🎯 Maximum tags limit
+- 🔍 Suggestion-only mode
 
 ## Installation
 
 ```bash
 # Add the component to your project
 npx @vincentcornelius/shadecn-tags-input add
-
-# Or install as a package (if you prefer not to copy the code)
-npm install @vincentcornelius/shadecn-tags-input
 ```
 
 ## Prerequisites
@@ -39,21 +38,50 @@ npx shadcn-ui@latest init
 After installation, you can import and use the component:
 
 ```tsx
-import { TagsInput } from "@/components/ui/tags-input";
+"use client";
+
+import { Tag, TagsInput, TagErrorCode } from "@/components/ui/tags-input";
 import { useState } from "react";
 
-function Example() {
-  const [tags, setTags] = useState([]);
+export default function CreateLinkTags() {
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const suggestions: Tag[] = [
+    { id: "1", name: "JavaScript" },
+    { id: "2", name: "TypeScript" },
+    { id: "3", name: "React" },
+    { id: "4", name: "Vue" },
+    { id: "5", name: "Angular" },
+    { id: "6", name: "Svelte" },
+    { id: "7", name: "Next.js" },
+    { id: "8", name: "Nuxt.js" },
+    { id: "9", name: "Tailwind" },
+    { id: "10", name: "CSS" },
+    { id: "11", name: "HTML" },
+    { id: "12", name: "PHP" },
+    { id: "13", name: "Python" },
+    { id: "14", name: "Java" },
+  ];
+
+  const handleError = (code: TagErrorCode) => {
+    switch (code) {
+      case "E01":
+        console.log("E01: Tag already exists");
+        break;
+      case "E02":
+        console.log("E02: Tag not found in suggestions");
+        break;
+    }
+  };
 
   return (
     <TagsInput
-      value={tags}
-      onChange={setTags}
-      suggestions={[
-        { id: "1", name: "React" },
-        { id: "2", name: "TypeScript" },
-        { id: "3", name: "JavaScript" },
-      ]}
+      value={selectedTags}
+      onChange={setSelectedTags}
+      suggestions={suggestions}
+      onlyFromSuggestions={true}
+      maxTags={3}
+      onError={handleError}
+      placeholder="add tag & press enter"
     />
   );
 }
@@ -61,18 +89,20 @@ function Example() {
 
 ## Props
 
-| Prop                  | Type                           | Default     | Description                      |
-| --------------------- | ------------------------------ | ----------- | -------------------------------- |
-| `value`               | `Tag[]`                        | Required    | Array of current tags            |
-| `onChange`            | `(tags: Tag[]) => void`        | Required    | Callback when tags change        |
-| `suggestions`         | `Tag[]`                        | `[]`        | Array of suggestion tags         |
-| `className`           | `string`                       | `undefined` | Container class name             |
-| `inputClassName`      | `string`                       | `undefined` | Input field class name           |
-| `badgeClassName`      | `string`                       | `undefined` | Tag badge class name             |
-| `badgeCloseClassName` | `string`                       | `undefined` | Close button class name          |
-| `tagsAlerts`          | `boolean`                      | `false`     | Enable tag alerts                |
-| `onlyFromSuggestions` | `boolean`                      | `false`     | Only allow tags from suggestions |
-| `onError`             | `(code: TagErrorCode) => void` | `undefined` | Error callback                   |
+| Prop                    | Type                           | Default     | Description                      |
+| ----------------------- | ------------------------------ | ----------- | -------------------------------- |
+| `value`                 | `Tag[]`                        | Required    | Array of current tags            |
+| `onChange`              | `(tags: Tag[]) => void`        | Required    | Callback when tags change        |
+| `suggestions`           | `Tag[]`                        | `[]`        | Array of suggestion tags         |
+| `className`             | `string`                       | `undefined` | Container class name             |
+| `inputClassName`        | `string`                       | `undefined` | Input field class name           |
+| `badgeClassName`        | `string`                       | `undefined` | Tag badge class name             |
+| `badgeCloseClassName`   | `string`                       | `undefined` | Close button class name          |
+| `autocompleteClassName` | `string`                       | `undefined` | Suggestions dropdown class name  |
+| `onlyFromSuggestions`   | `boolean`                      | `false`     | Only allow tags from suggestions |
+| `maxTags`               | `number`                       | `undefined` | Maximum number of tags allowed   |
+| `onError`               | `(code: TagErrorCode) => void` | `undefined` | Error callback                   |
+| `placeholder`           | `string`                       | `undefined` | Input placeholder text           |
 
 ## Features
 
@@ -100,6 +130,7 @@ The component is built with ShadcnUI, making it easy to customize using Tailwind
   inputClassName="placeholder:text-gray-400"
   badgeClassName="bg-primary text-primary-foreground"
   badgeCloseClassName="hover:bg-primary/20"
+  autocompleteClassName="bg-background"
   // ... other props
 />
 ```

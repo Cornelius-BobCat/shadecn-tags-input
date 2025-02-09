@@ -11,7 +11,7 @@ export interface Tag {
   name: string;
 }
 
-export type TagErrorCode = "E01" | "E02";
+export type TagErrorCode = "E01" | "E02"; // E01: Tag exists, E02: Not in suggestions
 
 interface TagsInputProps
   extends Omit<
@@ -26,8 +26,8 @@ interface TagsInputProps
   badgeClassName?: string;
   badgeCloseClassName?: string;
   autocompleteClassName?: string;
-  tagsAlerts?: boolean;
   onlyFromSuggestions?: boolean;
+  maxTags?: number;
   onError?: (code: TagErrorCode) => void;
 }
 
@@ -42,8 +42,8 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
       badgeClassName,
       badgeCloseClassName,
       autocompleteClassName,
-      tagsAlerts = false,
       onlyFromSuggestions = false,
+      maxTags,
       onError,
       ...props
     },
@@ -54,6 +54,8 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
     const [selectedIndex, setSelectedIndex] = React.useState(-1);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
+    const isMaxTagsReached = maxTags ? value.length >= maxTags : false;
+
     const filteredSuggestions = React.useMemo(() => {
       return suggestions.filter(
         (suggestion) =>
@@ -63,6 +65,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
     }, [suggestions, inputValue, value]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (isMaxTagsReached) return;
       setInputValue(e.target.value);
       setShowSuggestions(e.target.value.length > 0);
     };
@@ -72,11 +75,15 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
         onChange(value.slice(0, -1));
       } else if (e.key === "Enter" && inputValue.trim()) {
         e.preventDefault();
+
+        if (maxTags && value.length >= maxTags) {
+          setInputValue("");
+          return;
+        }
+
         if (selectedIndex >= 0 && selectedIndex < filteredSuggestions.length) {
-          // If a suggestion is selected, use it
           addTag(filteredSuggestions[selectedIndex]);
         } else {
-          // Otherwise create a new tag
           const existingTag = suggestions.find(
             (s) => s.name.toLowerCase() === inputValue.toLowerCase()
           );
@@ -84,6 +91,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
             addTag(existingTag);
           } else if (onlyFromSuggestions) {
             onError?.("E02");
+            setInputValue("");
           } else {
             addTag({ id: `new-${Date.now()}`, name: inputValue.trim() });
           }
@@ -106,6 +114,11 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
     };
 
     const addTag = (tag: Tag) => {
+      if (maxTags && value.length >= maxTags) {
+        setInputValue("");
+        return;
+      }
+
       if (!value.some((t) => t.name.toLowerCase() === tag.name.toLowerCase())) {
         onChange([...value, tag]);
         setInputValue("");
@@ -114,6 +127,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
         inputRef.current?.focus();
       } else {
         onError?.("E01");
+        setInputValue("");
       }
     };
 
@@ -149,38 +163,42 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
             value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
+            disabled={isMaxTagsReached}
             className={cn(
               "flex-1 !border-none !shadow-none !outline-none !ring-0 min-w-[120px] p-0",
+              isMaxTagsReached && "cursor-not-allowed opacity-50",
               inputClassName
             )}
           />
         </div>
-        {showSuggestions && filteredSuggestions.length > 0 && (
-          <div
-            className={cn(
-              "absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md",
-              autocompleteClassName,
-              "[&>ul]:py-1",
-              "[&>ul>li]:px-3 [&>ul>li]:py-2 [&>ul>li]:cursor-pointer"
-            )}
-          >
-            <ul>
-              {filteredSuggestions.map((suggestion, index) => (
-                <li
-                  key={suggestion.id}
-                  className={cn(
-                    "hover:bg-muted",
-                    selectedIndex === index && "bg-accent hover:bg-accent"
-                  )}
-                  onClick={() => addTag(suggestion)}
-                  onMouseEnter={() => setSelectedIndex(index)}
-                >
-                  {suggestion.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {showSuggestions &&
+          filteredSuggestions.length > 0 &&
+          !isMaxTagsReached && (
+            <div
+              className={cn(
+                "absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md",
+                autocompleteClassName,
+                "[&>ul]:py-1",
+                "[&>ul>li]:px-3 [&>ul>li]:py-2 [&>ul>li]:cursor-pointer"
+              )}
+            >
+              <ul>
+                {filteredSuggestions.map((suggestion, index) => (
+                  <li
+                    key={suggestion.id}
+                    className={cn(
+                      "hover:bg-muted",
+                      selectedIndex === index && "bg-accent hover:bg-accent"
+                    )}
+                    onClick={() => addTag(suggestion)}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                  >
+                    {suggestion.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
       </div>
     );
   }
