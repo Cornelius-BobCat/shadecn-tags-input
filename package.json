@@ -1,6 +1,6 @@
 {
   "name": "@vincentcornelius/shadecn-tags-input",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false,
   "description": "Tags input component for Shadecn",
   "keywords": [
@@ -14,6 +14,16 @@
     "ui",
     "shadecn"
   ],
+  "author": "Vincent Cornelius",
+  "homepage": "https://glups.uno/my-linkedin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cornelius-BobCat/shadecn-tags-input"
+  },
+  "bugs": {
+    "url": "https://github.com/Cornelius-BobCat/shadecn-tags-input/issues"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
