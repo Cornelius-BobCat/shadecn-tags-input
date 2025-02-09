@@ -4,14 +4,14 @@ import * as React from "react";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { cn } from "../lib/utils";
+import { cn } from "@/lib/utils";
 
 export interface Tag {
   id: string;
   name: string;
 }
 
-export type TagErrorCode = "E01" | "E02"; // E01: Tag already exists, E02: Tag not in suggestions
+export type TagErrorCode = "E01" | "E02";
 
 interface TagsInputProps
   extends Omit<
@@ -71,10 +71,8 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
       } else if (e.key === "Enter" && inputValue.trim()) {
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < filteredSuggestions.length) {
-          // If a suggestion is selected, use it
           addTag(filteredSuggestions[selectedIndex]);
         } else {
-          // Otherwise create a new tag
           const existingTag = suggestions.find(
             (s) => s.name.toLowerCase() === inputValue.toLowerCase()
           );

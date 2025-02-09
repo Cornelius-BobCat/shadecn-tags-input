@@ -1,6 +1,6 @@
 {
   "name": "@vincentcornelius/shadecn-tags-input",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "description": "Tags input component for Shadecn",
   "main": "dist/index.js",
