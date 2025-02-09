@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Badge } from "./badge";
+import { Input } from "./input";
 import { cn } from "@/lib/utils";
 
 export interface Tag {
@@ -25,6 +25,7 @@ interface TagsInputProps
   inputClassName?: string;
   badgeClassName?: string;
   badgeCloseClassName?: string;
+  autocompleteClassName?: string;
   tagsAlerts?: boolean;
   onlyFromSuggestions?: boolean;
   onError?: (code: TagErrorCode) => void;
@@ -40,6 +41,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
       inputClassName,
       badgeClassName,
       badgeCloseClassName,
+      autocompleteClassName,
       tagsAlerts = false,
       onlyFromSuggestions = false,
       onError,
@@ -62,7 +64,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
-      setShowSuggestions(true);
+      setShowSuggestions(e.target.value.length > 0);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -71,8 +73,10 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
       } else if (e.key === "Enter" && inputValue.trim()) {
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < filteredSuggestions.length) {
+          // If a suggestion is selected, use it
           addTag(filteredSuggestions[selectedIndex]);
         } else {
+          // Otherwise create a new tag
           const existingTag = suggestions.find(
             (s) => s.name.toLowerCase() === inputValue.toLowerCase()
           );
@@ -152,14 +156,21 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
           />
         </div>
         {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md">
-            <ul className="py-1">
+          <div
+            className={cn(
+              "absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md",
+              autocompleteClassName,
+              "[&>ul]:py-1",
+              "[&>ul>li]:px-3 [&>ul>li]:py-2 [&>ul>li]:cursor-pointer"
+            )}
+          >
+            <ul>
               {filteredSuggestions.map((suggestion, index) => (
                 <li
                   key={suggestion.id}
                   className={cn(
-                    "px-3 py-2 hover:bg-accent cursor-pointer",
-                    selectedIndex === index && "bg-accent"
+                    "hover:bg-muted",
+                    selectedIndex === index && "bg-accent hover:bg-accent"
                   )}
                   onClick={() => addTag(suggestion)}
                   onMouseEnter={() => setSelectedIndex(index)}
