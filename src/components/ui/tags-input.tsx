@@ -29,6 +29,7 @@ interface TagsInputProps
   onlyFromSuggestions?: boolean;
   maxTags?: number;
   onError?: (code: TagErrorCode) => void;
+  onInputChange?: (value: string) => void;
 }
 
 export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
@@ -45,6 +46,7 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
       onlyFromSuggestions = false,
       maxTags,
       onError,
+      onInputChange,
       ...props
     },
     ref
@@ -66,8 +68,10 @@ export const TagsInput = React.forwardRef<HTMLInputElement, TagsInputProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (isMaxTagsReached) return;
-      setInputValue(e.target.value);
-      setShowSuggestions(e.target.value.length > 0);
+      const newValue = e.target.value;
+      setInputValue(newValue);
+      setShowSuggestions(newValue.length > 0);
+      onInputChange?.(newValue);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
