@@ -103,6 +103,7 @@ export default function CreateLinkTags() {
 | `maxTags`               | `number`                       | `undefined` | Maximum number of tags allowed   |
 | `onError`               | `(code: TagErrorCode) => void` | `undefined` | Error callback                   |
 | `placeholder`           | `string`                       | `undefined` | Input placeholder text           |
+| `onInputChange`         | `(value: string) => void`      | `undefined` | Input change callback            |
 
 ## Features
 

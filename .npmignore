@@ -6,3 +6,4 @@ node_modules/
 tsconfig.json
 src
 .gitignore
+doc_maj_package.md

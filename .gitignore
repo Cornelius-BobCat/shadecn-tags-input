@@ -4,3 +4,4 @@ dist/
 .DS_Store
 *.tsbuildinfo
 .env
+doc_maj_package.md
